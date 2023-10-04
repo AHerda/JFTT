@@ -2,8 +2,10 @@
 name = "FA"
 version = "0.1.0"
 edition = "2021"
+author = "Adrian Herda, 268449"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+comfy-table = "7.0.1"
 unicode-segmentation = "1.10.1"

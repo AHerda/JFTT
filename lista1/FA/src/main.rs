@@ -1,65 +1,82 @@
+use comfy_table::Table;
 use std::{
+    cmp::{max, min},
     env::args,
     fs::read_to_string,
-    cmp::min
+    process,
 };
 use unicode_segmentation::UnicodeSegmentation;
 
 fn main() {
     let args: Vec<String> = args().collect();
+    if args.len() != 3 {
+        eprintln!("Error\nWrong enaugh arguments");
+        process::exit(1);
+    }
 
-    let pattern = args[1].clone();
-    let text = read_to_string(args[2].clone()).expect("Not able to read this file");
+    let binding = args[1].clone();
+    let pattern = binding.graphemes(true).collect::<Vec<&str>>();
+    let binding = read_to_string(args[2].clone()).expect("Not able to read this file");
+    let text = binding.graphemes(true).collect::<Vec<&str>>();
 
-    let matches = seek_patterns(pattern, text);
+    let matches = seek_patterns(&pattern, &text);
 
-    println!("{:?}", matches);
+    let mut table = Table::new();
+    table.set_header(vec!["column", "proximity"]);
 
-    // let s = "नमस्ते";
-    // let m = s.graphemes(true).collect::<Vec<&str>>();
+    matches.iter().for_each(|i| {
+        let i_i32: i32 = *i as i32;
+        table.add_row(vec![
+            format!("{i}"),
+            format!(
+                "{:?}",
+                text[usize::from(max(0, i_i32 - 1) as u16)..min(i + pattern.len() + 1, text.len())]
+                    .to_vec()
+            ),
+        ]);
+    });
+
+    println!("{table}");
 }
 
-fn seek_patterns(pattern_string: String, text_string: String) -> Vec<usize> {
-    let pattern = pattern_string.graphemes(true).collect::<Vec<&str>>();
-    let text = text_string.graphemes(true).collect::<Vec<&str>>();
+fn seek_patterns(pattern: &Vec<&str>, text: &Vec<&str>) -> Vec<usize> {
     let m = pattern.len();
-    let _n = text.len();
     let d = build_d(&pattern);
     let mut q = 0;
-    let mut matches: Vec<usize> = vec![];
+    let mut matches: Vec<usize> = Vec::new();
 
-    text
-        .iter()
-        .enumerate()
-        .for_each(|(i, grapheme)| {
-            let grapheme_index = pattern.iter().position(|x| x == grapheme).unwrap_or_else(|| { println!("Que the fuck?!?!"); 0 });
-        
-            q = d[q][grapheme_index];
-            if q == m {
-                matches.push(i - m + 1);
-            }
-        });
+    text.iter().enumerate().for_each(|(i, grapheme)| {
+        let grapheme_index = pattern
+            .iter()
+            .position(|x| x == grapheme)
+            .unwrap_or_else(|| pattern.len());
+
+        q = d[q][grapheme_index];
+        if q == m {
+            matches.push(i  + 1- m);
+        }
+    });
     matches
 }
 
 fn build_d(pattern: &Vec<&str>) -> Vec<Vec<usize>> {
     let m = pattern.len();
-    let mut d =  vec![vec![0; m]; m + 1];
+    let mut d = vec![vec![0; m + 1]; m + 1];
 
     for q in 0..=m {
-        for &grapheme in pattern {
+        for (i, &grapheme) in pattern.iter().enumerate() {
             let mut k = min(m, q + 1);
             while k > 0 {
-                k -= 1;
-                let mut temp = pattern[..k].to_vec();
+                let mut temp = pattern[..q].to_vec();
                 temp.push(grapheme);
-                if temp == pattern[q - k..q].to_vec() {
+                if pattern[..k].to_vec() == temp[temp.len() - k..].to_vec() {
                     break;
                 }
+                k -= 1;
             }
-            d[q][pattern.iter().position(|&x| x == grapheme).unwrap()] = k;
+            d[q][i] = k;
         }
     }
-
-    vec![vec![0; m]; m + 1]
+    // println!("{:#?}", d);
+    d
 }
