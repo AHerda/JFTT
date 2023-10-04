@@ -39,9 +39,9 @@ fn main() {
     println!("{table}");
 }
 
-fn seek_patterns(pattern: &Vec<&str>, text: &Vec<&str>) -> Vec<usize> {
+fn seek_patterns(pattern: &[&str], text: &[&str]) -> Vec<usize> {
     let m = pattern.len();
-    let d = build_d(&pattern);
+    let d = build_d(pattern);
     let mut q = 0;
     let mut matches: Vec<usize> = Vec::new();
 
@@ -49,7 +49,7 @@ fn seek_patterns(pattern: &Vec<&str>, text: &Vec<&str>) -> Vec<usize> {
         let grapheme_index = pattern
             .iter()
             .position(|x| x == grapheme)
-            .unwrap_or_else(|| pattern.len());
+            .unwrap_or(pattern.len());
 
         q = d[q][grapheme_index];
         if q == m {
@@ -59,7 +59,7 @@ fn seek_patterns(pattern: &Vec<&str>, text: &Vec<&str>) -> Vec<usize> {
     matches
 }
 
-fn build_d(pattern: &Vec<&str>) -> Vec<Vec<usize>> {
+fn build_d(pattern: &[&str]) -> Vec<Vec<usize>> {
     let m = pattern.len();
     let mut d = vec![vec![0; m + 1]; m + 1];
 
