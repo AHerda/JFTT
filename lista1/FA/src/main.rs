@@ -46,9 +46,7 @@ fn seek_patterns(pattern: &[&str], text: &[&str]) -> Vec<usize> {
     let mut matches: Vec<usize> = Vec::new();
 
     text.iter().enumerate().for_each(|(i, grapheme)| {
-        let grapheme_index = pattern
-            .iter()
-            .position(|x| x == grapheme);
+        let grapheme_index = pattern.iter().position(|x| x == grapheme);
 
         q = match grapheme_index {
             Some(i) => d[q][i],

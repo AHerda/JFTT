@@ -5,4 +5,4 @@ C:\Users\Adrian\Documents\Studia\JFTT\lista1\FA\target\debug\deps\FA-2ccad1384b8
 src\main.rs:
 Cargo.toml:
 
-# env-dep:CLIPPY_ARGS=--no-deps__CLIPPY_HACKERY__
+# env-dep:CLIPPY_ARGS=

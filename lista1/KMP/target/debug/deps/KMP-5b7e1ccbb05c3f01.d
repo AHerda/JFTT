@@ -5,4 +5,4 @@ C:\Users\Adrian\Documents\Studia\JFTT\lista1\KMP\target\debug\deps\KMP-5b7e1ccbb
 src\main.rs:
 Cargo.toml:
 
-# env-dep:CLIPPY_ARGS=--no-deps__CLIPPY_HACKERY__
+# env-dep:CLIPPY_ARGS=
