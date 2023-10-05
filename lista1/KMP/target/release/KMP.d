@@ -1,1 +1,1 @@
-C:\Users\Adrian\Documents\Studia\JFTT\lista1\KMP\target\release\KMP.exe: C:\Users\Adrian\Documents\Studia\JFTT\lista1\KMP\src\main.rs
+C:\Users\herda\Documents\studia\JFTT\lista1\KMP\target\release\KMP.exe: C:\Users\herda\Documents\studia\JFTT\lista1\KMP\src\main.rs

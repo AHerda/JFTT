@@ -1,1 +1,1 @@
-C:\Users\Adrian\Documents\Studia\JFTT\lista1\FA\target\release\FA.exe: C:\Users\Adrian\Documents\Studia\JFTT\lista1\FA\src\main.rs
+C:\Users\herda\Documents\studia\JFTT\lista1\FA\target\release\FA.exe: C:\Users\herda\Documents\studia\JFTT\lista1\FA\src\main.rs

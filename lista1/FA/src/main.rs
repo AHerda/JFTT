@@ -48,12 +48,14 @@ fn seek_patterns(pattern: &[&str], text: &[&str]) -> Vec<usize> {
     text.iter().enumerate().for_each(|(i, grapheme)| {
         let grapheme_index = pattern
             .iter()
-            .position(|x| x == grapheme)
-            .unwrap_or(pattern.len());
+            .position(|x| x == grapheme);
 
-        q = d[q][grapheme_index];
+        q = match grapheme_index {
+            Some(i) => d[q][i],
+            None => 0,
+        };
         if q == m {
-            matches.push(i  + 1- m);
+            matches.push(i + 1 - m);
         }
     });
     matches
@@ -61,10 +63,10 @@ fn seek_patterns(pattern: &[&str], text: &[&str]) -> Vec<usize> {
 
 fn build_d(pattern: &[&str]) -> Vec<Vec<usize>> {
     let m = pattern.len();
-    let mut d = vec![vec![0; m + 1]; m + 1];
+    let mut d = vec![vec![0; m]; m + 1];
 
     for q in 0..=m {
-        for (i, &grapheme) in pattern.iter().enumerate() {
+        pattern.iter().enumerate().for_each(|(i, &grapheme)| {
             let mut k = min(m, q + 1);
             while k > 0 {
                 let mut temp = pattern[..q].to_vec();
@@ -75,7 +77,7 @@ fn build_d(pattern: &[&str]) -> Vec<Vec<usize>> {
                 k -= 1;
             }
             d[q][i] = k;
-        }
+        });
     }
     // println!("{:#?}", d);
     d
