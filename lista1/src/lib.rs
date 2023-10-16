@@ -1,4 +1,6 @@
-use comfy_table::Table;
+use comfy_table::{
+    modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL, CellAlignment, ContentArrangement, Table,
+};
 use std::{
     cmp::{max, min},
     env::args,
@@ -21,6 +23,11 @@ pub fn get_args() -> (String, String) {
 
 pub fn table(matches: Vec<usize>, pattern: Vec<&str>, text: Vec<&str>) {
     let mut table = Table::new();
+    table
+        .load_preset(UTF8_FULL)
+        .apply_modifier(UTF8_ROUND_CORNERS)
+        .set_content_arrangement(ContentArrangement::Dynamic);
+
     table.set_header(vec!["column", "proximity"]);
 
     matches.iter().for_each(|i| {
@@ -34,6 +41,10 @@ pub fn table(matches: Vec<usize>, pattern: Vec<&str>, text: Vec<&str>) {
             ),
         ]);
     });
+
+    table
+        .column_iter_mut()
+        .for_each(|column| column.set_cell_alignment(CellAlignment::Center));
 
     println!("{table}");
 }
