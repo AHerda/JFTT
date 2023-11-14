@@ -25,12 +25,12 @@ quote \".*\"
 <NOT_A_COMMENT>{
     {quote}                         ECHO;
     \>                              { ECHO; BEGIN(INITIAL); }
-    .|\n                            ECHO;
+    .|\r\n                            ECHO;
 }
 
 %%
 
-int yywrap() {};
+int yywrap() {return 1;}
 
 int main(int argc, char** argv) {
     yyin = fopen(argv[1], "r");

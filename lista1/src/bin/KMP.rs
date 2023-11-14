@@ -37,14 +37,14 @@ fn seek_patterns(pattern: &[&str], text: &[&str]) -> Vec<usize> {
 
 fn build_pi(pattern: &[&str]) -> Vec<usize> {
     let m = pattern.len();
-    let mut k = 0;
     let mut pi: Vec<usize> = vec![0; m];
+    let mut k = 0;
 
     for q in 1..m {
         while k > 0 && pattern[k] != pattern[q] {
             k = pi[k - 1];
         }
-        if pattern[q] == pattern[k] {
+        if pattern[k] == pattern[q] {
             k += 1;
         }
         pi[q] = k;

@@ -19,7 +19,7 @@
 2 3 4 + 
 	Błąd: za mała liczba operatorów
 
-2 4 3+
+2 .4 3+
 	Błąd: zły symbol "."
 
 5 5 + +  5 5 - -
@@ -36,4 +36,7 @@
 
 0 0 / 
 	Błąd: dzielenie przez 0
+
+20 40 + 
+	= 60
 

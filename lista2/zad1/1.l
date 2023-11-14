@@ -7,7 +7,7 @@ int words = 0;
 
 %%
 
-^[ \t\n]*       ;
+^[ \t\r\n]*     ;
 [ \t]+$         ;
 [ \t]+          fprintf(yyout, " ");
 [a-zA-Z0-9]+    { words++; ECHO; }

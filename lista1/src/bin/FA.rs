@@ -1,5 +1,6 @@
 use std::cmp::min;
 use unicode_segmentation::UnicodeSegmentation;
+use std::collections::HashSet;
 
 use lista1::{get_args, table};
 
@@ -21,11 +22,11 @@ fn seek_patterns(pattern: &[&str], text: &[&str]) -> Vec<usize> {
 
     text.iter().enumerate().for_each(|(i, grapheme)| {
         let grapheme_index = pattern.iter().position(|x| x == grapheme);
-
         q = match grapheme_index {
             Some(i) => d[q][i],
             None => 0,
         };
+
         if q == m {
             matches.push(i + 1 - m);
         }
@@ -51,6 +52,6 @@ fn build_d(pattern: &[&str]) -> Vec<Vec<usize>> {
             d[q][i] = k;
         });
     }
-    // println!("{:#?}", d);
+    println!("{d:?}");
     d
 }

@@ -11,22 +11,22 @@ bool docs = false;
 %%
 
     /* Single line quotes and pointy brackets <> */
-\"[^(\"|\\\n)]*?\"                              ECHO;
-\<[^(\>|\\\n)]*?\>                              ECHO;
+\"[^(\"|\r\n|\n)]*?\"                                      ECHO;
+\<[^(\>|\r\n|\n)]*?\>                                      ECHO;
 
     /* signle line docs comments */
-\/\/\/.*\n                                      { if(docs) ECHO; }
-\/\/!.*\n                                       { if(docs) ECHO; }
+[ \t]*\/\/\/(.|\\\r\n|\\\n)*\n                          { if(docs) ECHO; }
+[ \t]*\/\/!(.|\\\r\n|\\\n)*\n                           { if(docs) ECHO; }
 
     /* multiline docs comments */
-\/\*\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/   { if(docs) ECHO; }
-\/\*\!([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/   { if(docs) ECHO; }
+[ \t]*\/\*\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/     { if(docs) ECHO; }
+[ \t]*\/\*\!([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/     { if(docs) ECHO; }
 
     /* signle and mulitiline normal comments */
-"//".*\n                                        ;
-\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/     ;
+[ \t]*"//"(.|\\\r\n|\\\n)*\n                            ;
+[ \t]*\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/       ;
 
-.|\n                                            ECHO;
+.|\n                                                    ECHO;
 
 %%
 
@@ -60,7 +60,6 @@ int main(int argc, char** argv) {
     }
 
     yylex();
-    printf("DUPA2");
 
     if(in) fclose(yyin);
     if(out) fclose(yyout);

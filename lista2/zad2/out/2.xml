@@ -3,9 +3,9 @@
 <!DOCTYPE none>
 <root>
   
-  <foo var="test>   <a" href="x" />
+  <foo var="test>  <!-- this is not a comment --> <a" href="x" />
   <![CDATA[
-    In CDATA 
+    In CDATA <!-- everything is data!!! -->
   ]]>
   
   <!-- invalid -- comment -->

@@ -121,6 +121,7 @@ int pop(std::stack<int>& st) {
 }
 
 [^[[:blank:]]]|"." {
+    ECHO;
     err = "Błąd: zły symbol \"" + (std::string) yytext + "\"";
     BEGIN(ERROR);
 }
