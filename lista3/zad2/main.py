@@ -10,7 +10,7 @@ def main():
         try:
             while True:
                 text += input()
-                text += '\n'
+                text += "\n"
                 if not text.endswith('\\\n'):
                     break
             parser.parse(lexer.tokenize(text))

@@ -2,10 +2,9 @@ from sly import Lexer
 
 #GF = 1234577
 class MyLexer(Lexer):
-    tokens = { NUM, ADD, SUB, MUL ,DIV, MOD, POW, LPAR, RPAR, RESULT, ERR, END}
+    tokens = { NUM, ADD, SUB, MUL ,DIV, MOD, POW, LPAR, RPAR, RESULT, END, ERR}
 
-    ignore_comment_line = r'^\#(.|\\\n)*\n'
-    ignore_comment = r'\#(.|\\\n)*\n'
+    ignore_comment_line = r'^\#(\\\n|.)*\n'
     ignore_tbc = r'\\\n'
 
     ignore = r' \t'
@@ -26,7 +25,7 @@ class MyLexer(Lexer):
     RPAR = r'\)'
     RESULT = r'\n'
     END = r'^exit'
-    ERR = r'.+'
+    ERR = r'.'
 
     def error(self, t):
         pass

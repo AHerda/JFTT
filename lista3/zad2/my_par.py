@@ -32,10 +32,10 @@ class MyParser(Parser):
         self.rpn = ""
 
     precedence = (
-        ('nonassoc', 'POW'),
         ('left', 'ADD', 'SUB'),
         ('left', 'MUL', 'DIV', 'MOD'),
-        ('right', 'NEG')
+        ('right', 'NEG'),
+        ('nonassoc', 'POW')
     )
 
     # Grammar rules and actions
@@ -57,11 +57,7 @@ class MyParser(Parser):
 
     @_('error RESULT')
     def line(self, p):
-        self.error("Zła składnia")
-
-    @_('ERR')
-    def expr(self, p):
-        self.error("Zły znak")
+        self.my_error()
 
     @_('NUM')
     def expr(self, p):
@@ -91,13 +87,13 @@ class MyParser(Parser):
     @_('expr DIV expr')
     def expr(self, p):
         if p[2] == 0:
-            self.error("Dzielenie przez 0")
+            self.my_error("Dzielenie przez 0")
             raise Exception
         else:
             self.rpn += "/ "
             result = invert(p[2], GF)
             if result == -1:
-                self.error(f"{p[2]} nie jest odwracalne modulo {GF}\n")
+                self.my_error(f"{p[2]} nie jest odwracalne modulo {GF}\n")
                 raise Exception
             else:
                 result = mod(result, GF)
@@ -114,7 +110,7 @@ class MyParser(Parser):
     @_('expr MOD expr')
     def expr(self, p):
         if p[2] == 0:
-            self.error("Modulo 0")
+            self.my_error("Modulo 0")
             raise Exception
         else:
             self.rpn += "% "
@@ -157,31 +153,30 @@ class MyParser(Parser):
     @_('exponent DIV exponent')
     def exponent(self, p):
         if p[2] == 0:
-            self.error("Dzielenie przez 0")
+            self.my_error("Dzielenie przez 0")
             raise Exception
         else:
             self.rpn += "/ "
             result = invert(p[2], GF - 1)
             if result == -1:
-                self.error(f"{p[2]} nie jest odwracalne modulo {GF - 1}")
+                self.my_error(f"{p[2]} nie jest odwracalne modulo {GF - 1}")
                 raise Exception
             else:
                 result = mod(result, GF - 1)
                 return mod(p[0] * result, GF - 1)
 
-    @_('exponent POW exponent')
-    def expr(self, p):
-        self.error("Składanie potęg")
-        raise Exception
-
     @_('exponent MOD exponent')
     def exponent(self, p):
         if p[2] == 0:
-            self.error("Modulo 0")
+            self.my_error("Modulo 0")
             raise Exception
         else:
             self.rpn += "% "
             return mod(p[0] % p[2], GF - 1)
+
+    @_('exponent POW exponent')
+    def exponent(self, p):
+        self.my_error("Składanie potęg")
 
     @_('LPAR exponent RPAR')
     def exponent(self, p):
@@ -192,11 +187,14 @@ class MyParser(Parser):
         self.rpn += "~ "
         return mod(-p[2], GF - 1)
 
-    def error(self, s="Zła składnia"):
+    def my_error(self, s="Zła składnia"):
         while True:
-            tok = next(self.tokens, None)
-            if not tok or tok.type == 'RESULT':
+            token = next(self.tokens, None)
+            if not token or token.type == 'RESULT':
                 break
         print("Błąd: ", s)
         self.restart()
         self.reset()
+
+    def error(self, p):
+        self.my_error()
