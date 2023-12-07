@@ -7,7 +7,7 @@ class MyLexer(Lexer):
     ignore_comment_line = r'^\#(\\\n|.)*\n'
     ignore_tbc = r'\\\n'
 
-    ignore = r' \t'
+    ignore = ' \t'
 
     # regex for tokens
     @_(r'\d+')

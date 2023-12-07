@@ -9,6 +9,7 @@
 	std::string rpn;
 	std::string error_message;
 	bool is_error = false;
+	extern FILE *yyin;
 
 	int mod(int a, int mod) {
 		return (a % mod + mod) % mod;
@@ -144,8 +145,7 @@ line:
 	exp {
 		if (!is_error) {
 			std::cout << rpn << std::endl;
-			std::cout << "Wynik:\t" << $1 << std::endl;
-			is_error = false;
+			std::cout << "\t= " << $1 << "\n\n";
 		}
 		reset();
 	}
@@ -180,7 +180,7 @@ exp:
 			}
 		}
 	}
-|	exp POW exponent						{ $$ = power($1, $3); is_error ? reset() : rpn_add("^"); }
+|	exp POW exponent						{ $$ = power($1, $3); if(!is_error) { rpn_add("^"); } }
 |	exp MOD exp								{ rpn_add("%"); if($3 == 0) { is_error = true; yyerror("Modulo 0"); } else { $$ = modulo($1, $3); } }
 |	LPAR exp RPAR							{ $$ = $2; }
 |	SUB LPAR exp RPAR %prec NEG				{ rpn_add("~"); $$ = mod(-$3, GF); }
@@ -216,8 +216,8 @@ exponent:
 |	LPAR exponent RPAR						{ $$ = $2; }
 |	SUB LPAR exponent RPAR %prec NEG		{ rpn_add("~"); $$ = mod(-$3, GF - 1); }
 ;
-%%
 
+%%
 
 void yyerror(std::string s)
 {
@@ -226,11 +226,19 @@ void yyerror(std::string s)
     } else {
         std::cout << "Błąd: " << s << std::endl;
     }
-    reset();
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	if (argc == 2) {
+        yyin = fopen(argv[1], "r");
+    }
+	else if(argc > 2) {
+		std::cout << "Za duo parametrów\n";
+		return -1;
+	}
+
+    
     yyparse();
     return 0;
 }

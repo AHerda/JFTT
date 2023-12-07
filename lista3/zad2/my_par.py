@@ -48,7 +48,7 @@ class MyParser(Parser):
     @_('expr RESULT')
     def line(self, p):
         print(self.rpn)
-        print(f"Wynik:\t{p[0]}\n")
+        print(f"\t= {p[0]}\n")
         self.reset()
 
     @_('')
@@ -192,7 +192,7 @@ class MyParser(Parser):
             token = next(self.tokens, None)
             if not token or token.type == 'RESULT':
                 break
-        print("Błąd: ", s)
+        print(f"Błąd: {s}\n")
         self.restart()
         self.reset()
 
