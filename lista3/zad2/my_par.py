@@ -64,9 +64,9 @@ class MyParser(Parser):
         self.rpn += f"{mod(p[0], GF)} "
         return mod(p[0], GF)
 
-    @_('SUB NUM %prec NEG')
+    @_('SUB expr %prec NEG')
     def expr(self, p):
-        self.rpn += f"{mod(-p[1], GF)} "
+        self.rpn += f"~ "
         return mod(-p[1], GF)
 
     @_('expr ADD expr')
@@ -120,19 +120,14 @@ class MyParser(Parser):
     def expr(self, p):
         return p[1]
 
-    @_('SUB LPAR expr RPAR %prec NEG')
-    def expr(self, p):
-        self.rpn += "~ "
-        return mod(-p[2], GF)
-
     @_('NUM')
     def exponent(self, p):
         self.rpn += f"{mod(p[0], GF - 1)} "
         return mod(p[0], GF - 1)
 
-    @_('SUB NUM %prec NEG')
+    @_('SUB exponent %prec NEG')
     def exponent(self, p):
-        self.rpn += f"{mod(-p[1], GF - 1)} "
+        self.rpn += f"~ "
         return mod(-p[1], GF - 1)
 
     @_('exponent ADD exponent')
@@ -181,11 +176,6 @@ class MyParser(Parser):
     @_('LPAR exponent RPAR')
     def exponent(self, p):
         return p[1]
-
-    @_('SUB LPAR exponent RPAR %prec NEG')
-    def exponent(self, p):
-        self.rpn += "~ "
-        return mod(-p[2], GF - 1)
 
     def my_error(self, s="Zła składnia"):
         while True:

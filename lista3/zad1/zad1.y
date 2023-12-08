@@ -103,8 +103,8 @@
 	int power(long int a, int b) {
 		int result = 1;
 
-		for(int i = 1; i <= b; i++)
-			result = mod(result * a, GF);
+		for(int i = 0; i < b; i++)
+			result = multiply(result, b);
 		return result;
 	}
 
@@ -138,7 +138,7 @@
 %%
 input:
 	%empty
-|	input line RESULT						{ reset(); }
+|	line RESULT input 						{ reset(); }
 ;
 
 line:
@@ -157,7 +157,7 @@ line:
 
 exp:
 	NUM										{ $$ = mod($1, GF); rpn_add(std::to_string($$)); }
-|	SUB NUM %prec NEG						{ $$ = mod(-$2, GF); rpn_add(std::to_string($$)); }
+|	SUB exp %prec NEG						{ rpn_add("~"); $$ = mod(-$2, GF); }
 |	exp ADD exp								{ rpn_add("+"); $$ = add($1, $3); }
 |	exp SUB exp								{ rpn_add("-"); $$ = subtract($1, $3); }
 |	exp MUL exp								{ rpn_add("*"); $$ = multiply($1, $3); }
@@ -183,12 +183,11 @@ exp:
 |	exp POW exponent						{ $$ = power($1, $3); if(!is_error) { rpn_add("^"); } }
 |	exp MOD exp								{ rpn_add("%"); if($3 == 0) { is_error = true; yyerror("Modulo 0"); } else { $$ = modulo($1, $3); } }
 |	LPAR exp RPAR							{ $$ = $2; }
-|	SUB LPAR exp RPAR %prec NEG				{ rpn_add("~"); $$ = mod(-$3, GF); }
 ;
 
 exponent:
 	NUM										{ $$ = mod($1, GF - 1); rpn_add(std::to_string($$)); }
-|	SUB NUM %prec NEG						{ $$ = mod(-$2, GF - 1); rpn_add(std::to_string($$)); }
+|	SUB exponent %prec NEG					{ rpn_add("~"); $$ = mod(-$2, GF - 1); }
 |	exponent ADD exponent					{ rpn_add("+"); $$ = add_pow($1, $3); }
 |	exponent SUB exponent					{ rpn_add("-"); $$ = subtract_pow($1, $3); }
 |	exponent MUL exponent					{ rpn_add("*"); $$ = multiply_pow($1, $3); }
@@ -203,7 +202,7 @@ exponent:
 			int result = divide_pow($1, $3);
 			if (result == -1) {
 				is_error = true;
-				error_message = std::to_string($3) + " nie jest odwracalne modulo " + std::to_string(GF - 1) + "\n";
+				error_message = std::to_string($3) + " nie jest odwracalne modulo " + std::to_string(GF - 1);
 				yyerror(error_message);
 			}
 			else {
@@ -214,7 +213,6 @@ exponent:
 |	exponent POW exponent					{ is_error = true; yyerror("Składanie potęg"); }
 |	exponent MOD exponent					{ rpn_add("%"); if($3 == 0) { is_error = true; yyerror("Modulo 0"); } else { $$ = modulo_pow($1, $3); } }
 |	LPAR exponent RPAR						{ $$ = $2; }
-|	SUB LPAR exponent RPAR %prec NEG		{ rpn_add("~"); $$ = mod(-$3, GF - 1); }
 ;
 
 %%
@@ -222,9 +220,9 @@ exponent:
 void yyerror(std::string s)
 {
     if (error_message == "") {
-        std::cout << "Błąd: Zła składnia!\n";
+        std::cout << "Błąd: Zła składnia!\n\n";
     } else {
-        std::cout << "Błąd: " << s << std::endl;
+        std::cout << "Błąd: " << s << "\n\n";
     }
 }
 
@@ -234,11 +232,11 @@ int main(int argc, char** argv)
         yyin = fopen(argv[1], "r");
     }
 	else if(argc > 2) {
-		std::cout << "Za duo parametrów\n";
+		std::cout << "Za dużo parametrów\n";
 		return -1;
 	}
 
-    
+
     yyparse();
     return 0;
 }

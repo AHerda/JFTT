@@ -16,20 +16,20 @@
 \\\n                                {}
 
 
-\+                                  { return ADD; }
-\-                                  { return SUB; }
-\*                                  { return MUL; }
-\/                                  { return DIV; }
-\^                                  { return POW; }
-\%                                  { return MOD; }
-\(                                  { return LPAR; }
-\)                                  { return RPAR; }
+\+                                  { ECHO; return ADD; }
+\-                                  { ECHO; return SUB; }
+\*                                  { ECHO; return MUL; }
+\/                                  { ECHO; return DIV; }
+\^                                  { ECHO; return POW; }
+\%                                  { ECHO; return MOD; }
+\(                                  { ECHO; return LPAR; }
+\)                                  { ECHO; return RPAR; }
 
-[0-9]+                              { yylval = atoi(yytext); return NUM; }
+[0-9]+                              { ECHO; yylval = atoi(yytext); return NUM; }
 
 [ \t]+                              {}
 
-\n                                  { return RESULT; }
+\n                                  { ECHO; return RESULT; }
 
 ^"exit"$                            { printf("Kończenie działania programu.\n"); return 0; }
 
