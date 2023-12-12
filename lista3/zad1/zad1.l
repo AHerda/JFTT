@@ -8,6 +8,8 @@
 
     #define GF 1234577
 
+    bool if_file;
+
     int yylex();
 %}
 
@@ -16,20 +18,20 @@
 \\\n                                {}
 
 
-\+                                  { ECHO; return ADD; }
-\-                                  { ECHO; return SUB; }
-\*                                  { ECHO; return MUL; }
-\/                                  { ECHO; return DIV; }
-\^                                  { ECHO; return POW; }
-\%                                  { ECHO; return MOD; }
-\(                                  { ECHO; return LPAR; }
-\)                                  { ECHO; return RPAR; }
+\+                                  { if(if_file) ECHO; return ADD; }
+\-                                  { if(if_file) ECHO; return SUB; }
+\*                                  { if(if_file) ECHO; return MUL; }
+\/                                  { if(if_file) ECHO; return DIV; }
+\^                                  { if(if_file) ECHO; return POW; }
+\%                                  { if(if_file) ECHO; return MOD; }
+\(                                  { if(if_file) ECHO; return LPAR; }
+\)                                  { if(if_file) ECHO; return RPAR; }
 
-[0-9]+                              { ECHO; yylval = atoi(yytext); return NUM; }
+[0-9]+                              { if(if_file) ECHO; yylval = atoi(yytext); return NUM; }
 
 [ \t]+                              {}
 
-\n                                  { ECHO; return RESULT; }
+(\n|\r\n)                           { ECHO; return RESULT; }
 
 ^"exit"$                            { printf("Kończenie działania programu.\n"); return 0; }
 

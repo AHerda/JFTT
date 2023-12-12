@@ -10,6 +10,7 @@
 	std::string error_message;
 	bool is_error = false;
 	extern FILE *yyin;
+	extern bool if_file;
 
 	int mod(int a, int mod) {
 		return (a % mod + mod) % mod;
@@ -228,8 +229,10 @@ void yyerror(std::string s)
 
 int main(int argc, char** argv)
 {
+	if_file = false;
 	if (argc == 2) {
         yyin = fopen(argv[1], "r");
+		if_file = true;
     }
 	else if(argc > 2) {
 		std::cout << "Za dużo parametrów\n";
